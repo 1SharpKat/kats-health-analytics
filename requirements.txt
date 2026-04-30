@@ -1,0 +1,6 @@
+pandas
+numpy
+pytest
+streamlit>=1.32.0
+plotly
+pillow>=10.3.0
