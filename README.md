@@ -101,4 +101,4 @@ streamlit run main.py
 
 ## Author
 
-Kathryn Sharp
+Kat Sharp
