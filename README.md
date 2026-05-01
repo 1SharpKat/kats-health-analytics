@@ -38,11 +38,14 @@ This project analyzes synthetic wellness data to visualize recovery trends, slee
 
 ## Screenshots
 
+### Main Page
+![Main Page Screenshot](images/main.png)
+
 ### Dashboard
-_Add dashboard screenshot here_
+![Dashboard Screenshot](images/dashboard.png)
 
 ### Trends & Insights
-_Add trends page screenshot here_
+![Trends Screenshot](images/trends.png)
 
 ---
 
