@@ -2,6 +2,9 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import warnings
+from utils.constants import COLORS
+from utils.chart_helpers import clean_layout
+
 
 warnings.filterwarnings(
     "ignore",
@@ -12,56 +15,11 @@ from datetime import timedelta
 
 from modules.processor import process_data
 
+from styles.theme import load_theme
 
-# -----------------------------
-# Color system
-# -----------------------------
-COLORS = {
-    "blue": "#38BDF8",
-    "indigo": "#6366F1",
-    "pink": "#EC4899",
-    "green": "#22C55E",
-    "amber": "#F59E0B",
-    "text": "#F8FAFC",
-    "muted": "#CBD5E1"
-}
+load_theme()
 
 
-# -----------------------------
-# Helper function for chart styling
-# -----------------------------
-def clean_layout(fig):
-    fig.update_layout(
-        height=430,
-        margin=dict(l=10, r=10, t=50, b=20),
-        plot_bgcolor="rgba(15, 23, 42, 0.0)",
-        paper_bgcolor="rgba(15, 23, 42, 0.0)",
-        font=dict(color="#F8FAFC", size=13),
-        hoverlabel=dict(
-            bgcolor="#0F172A",
-            font_color="#F8FAFC",
-            bordercolor="#38BDF8"
-        ),
-        legend=dict(
-            bgcolor="rgba(0,0,0,0)",
-            orientation="h",
-            y=1.1
-        )
-    )
-
-    fig.update_xaxes(
-        showgrid=True,
-        gridcolor="rgba(148, 163, 184, 0.16)",
-        zeroline=False
-    )
-
-    fig.update_yaxes(
-        showgrid=True,
-        gridcolor="rgba(148, 163, 184, 0.16)",
-        zeroline=False
-    )
-
-    return fig
 
 
 # -----------------------------
@@ -136,167 +94,7 @@ if missing_columns:
     st.stop()
 
 
-# -----------------------------
-# Metric card styling
-# -----------------------------
-st.markdown(
-    """
-    <style>
 
-
-.stApp {
-    background:
-        radial-gradient(circle at top left, rgba(56,189,248,0.18), transparent 28%),
-        radial-gradient(circle at top right, rgba(99,102,241,0.18), transparent 30%),
-        linear-gradient(135deg, #020617, #0F172A 55%, #111827);
-    color: #F8FAFC;
-}
-
-h1, h2, h3 {
-    letter-spacing: -0.03em;
-}
-
-p {
-    color: #CBD5E1;
-}
-
-.premium-card {
-    padding: 1.5rem;
-    border-radius: 28px;
-    background: rgba(15, 23, 42, 0.86);
-    border: 1px solid rgba(148, 163, 184, 0.18);
-    backdrop-filter: blur(18px);
-    box-shadow:
-        0 18px 45px rgba(0,0,0,0.35),
-        inset 0 1px 0 rgba(255,255,255,0.05);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.premium-card:hover {
-    transform: translateY(-6px);
-    box-shadow:
-        0 24px 70px rgba(56,189,248,0.20),
-        0 10px 35px rgba(0,0,0,0.45);
-}
-
-.hero-premium {
-    padding: 3rem;
-    border-radius: 34px;
-    background:
-        linear-gradient(135deg, rgba(56,189,248,0.95), rgba(99,102,241,0.95), rgba(236,72,153,0.85));
-    box-shadow: 0 28px 80px rgba(56,189,248,0.25);
-    margin-bottom: 2rem;
-}
-
-.hero-premium h1 {
-    font-size: 4rem;
-    margin-bottom: 0.5rem;
-    color: white;
-}
-
-.hero-premium p {
-    font-size: 1.25rem;
-    color: #E0F2FE;
-}
-
-div[data-testid="metric-container"] {
-    background: linear-gradient(135deg, rgba(56,189,248,0.95), rgba(99,102,241,0.95));
-    padding: 20px;
-    border-radius: 24px;
-    box-shadow: 0 18px 45px rgba(56,189,248,0.22);
-    border: 1px solid rgba(255,255,255,0.15);
-}
-
-div[data-testid="metric-container"] label,
-div[data-testid="metric-container"] div {
-    color: white !important;
-}
-
-section[data-testid="stSidebar"] {
-    background: rgba(2, 6, 23, 0.96);
-    border-right: 1px solid rgba(148, 163, 184, 0.15);
-}    
-    div[data-testid="metric-container"] {
-        background: linear-gradient(135deg, #6366F1, #06B6D4);
-        color: white;
-        padding: 18px;
-        border-radius: 18px;
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
-    }
-    div[data-testid="metric-container"] label {
-        color: white !important;
-    }
-    div[data-testid="metric-container"] div {
-        color: white !important;
-    }
-
-    .card-glow {
-    position: relative;
-    overflow: hidden;
-    padding: 1.5rem;
-    border-radius: 24px;
-    background: rgba(15, 23, 42, 0.88);
-    border: 1px solid rgba(148, 163, 184, 0.12);
-    backdrop-filter: blur(14px);
-
-    transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
-}
-
-.card-glow::before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    border-radius: 24px;
-    padding: 2px;
-
-    background: linear-gradient(
-        135deg,
-        rgba(56, 189, 248, 0.9),
-        rgba(99, 102, 241, 0.9),
-        rgba(236, 72, 153, 0.9)
-    );
-
-    -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-
-    opacity: 0.65;
-    transition: opacity 0.3s ease;
-}
-
-.card-glow:hover {
-    transform: translateY(-8px) scale(1.01);
-
-    box-shadow:
-        0 0 20px rgba(56, 189, 248, 0.28),
-        0 0 40px rgba(99, 102, 241, 0.22),
-        0 0 60px rgba(236, 72, 153, 0.14);
-}
-
-.card-glow:hover::before {
-    opacity: 1;
-}
-
-[data-testid="stPlotlyChart"] {
-    transition:
-        transform 0.28s ease,
-        box-shadow 0.28s ease;
-    border-radius: 24px;
-    overflow: hidden;
-}
-
-[data-testid="stPlotlyChart"]:hover {
-    transform: translateY(-4px);
-}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 
 # -----------------------------

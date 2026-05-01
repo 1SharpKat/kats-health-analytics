@@ -3,61 +3,23 @@ import plotly.express as px
 import warnings
 from datetime import timedelta
 
+from utils.constants import COLORS
+from utils.chart_helpers import clean_layout
+
 from modules.processor import process_data
+
+from styles.theme import load_theme
+
+st.set_page_config(layout="wide", page_title="Trends & Insights")
+
+load_theme()
+@st.cache_data
+def load_cached_data():
+    return process_data()
 
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-
-# -----------------------------
-# Premium color system
-# -----------------------------
-COLORS = {
-    "blue": "#38BDF8",
-    "indigo": "#6366F1",
-    "pink": "#EC4899",
-    "green": "#22C55E",
-    "amber": "#F59E0B",
-    "text": "#F8FAFC",
-    "muted": "#CBD5E1"
-}
-
-
-# -----------------------------
-# Chart styling helper
-# -----------------------------
-def clean_layout(fig):
-    fig.update_layout(
-        height=430,
-        margin=dict(l=10, r=10, t=50, b=20),
-        plot_bgcolor="rgba(15, 23, 42, 0)",
-        paper_bgcolor="rgba(15, 23, 42, 0)",
-        font=dict(color=COLORS["text"], size=13),
-        hoverlabel=dict(
-            bgcolor="#0F172A",
-            font_color=COLORS["text"],
-            bordercolor=COLORS["blue"]
-        ),
-        legend=dict(
-            bgcolor="rgba(0,0,0,0)",
-            orientation="h",
-            y=1.1
-        )
-    )
-
-    fig.update_xaxes(
-        showgrid=True,
-        gridcolor="rgba(148, 163, 184, 0.15)",
-        zeroline=False
-    )
-
-    fig.update_yaxes(
-        showgrid=True,
-        gridcolor="rgba(148, 163, 184, 0.15)",
-        zeroline=False
-    )
-
-    return fig
 
 
 # -----------------------------
@@ -69,164 +31,7 @@ st.set_page_config(layout="wide", page_title="Trends & Insights")
 # -----------------------------
 # Premium styling
 # -----------------------------
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background:
-            radial-gradient(circle at top left, rgba(56,189,248,0.18), transparent 28%),
-            radial-gradient(circle at top right, rgba(99,102,241,0.18), transparent 30%),
-            linear-gradient(135deg, #020617, #0F172A 55%, #111827);
-        color: #F8FAFC;
-    }
 
-    h1, h2, h3 {
-        letter-spacing: -0.03em;
-    }
-
-    p {
-        color: #CBD5E1;
-    }
-
-    section[data-testid="stSidebar"] {
-        background: rgba(2, 6, 23, 0.96);
-        border-right: 1px solid rgba(148, 163, 184, 0.15);
-    }
-
-    .trend-hero {
-        padding: 3rem;
-        border-radius: 34px;
-        background:
-            linear-gradient(135deg, rgba(56,189,248,0.95), rgba(99,102,241,0.95), rgba(236,72,153,0.85));
-        box-shadow: 0 28px 80px rgba(56,189,248,0.25);
-        margin-bottom: 2rem;
-        animation: fadeInUp 0.8s ease;
-    }
-
-    .trend-hero h1 {
-        font-size: 4rem;
-        margin-bottom: 0.5rem;
-        color: white;
-    }
-
-    .trend-hero p {
-        font-size: 1.25rem;
-        color: #E0F2FE;
-        margin: 0;
-    }
-
-    div[data-testid="metric-container"] {
-        background: linear-gradient(135deg, rgba(56,189,248,0.95), rgba(99,102,241,0.95));
-        padding: 20px;
-        border-radius: 24px;
-        box-shadow: 0 18px 45px rgba(56,189,248,0.22);
-        border: 1px solid rgba(255,255,255,0.15);
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    div[data-testid="metric-container"]:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 24px 70px rgba(56,189,248,0.28);
-    }
-
-    div[data-testid="metric-container"] label,
-    div[data-testid="metric-container"] div {
-        color: white !important;
-    }
-
-    .card-glow {
-        position: relative;
-        overflow: hidden;
-        padding: 1.5rem;
-        border-radius: 28px;
-        background: rgba(15, 23, 42, 0.88);
-        border: 1px solid rgba(148, 163, 184, 0.15);
-        backdrop-filter: blur(16px);
-        box-shadow:
-            0 18px 45px rgba(0,0,0,0.35),
-            inset 0 1px 0 rgba(255,255,255,0.05);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card-glow::before {
-        content: "";
-        position: absolute;
-        inset: -2px;
-        border-radius: 28px;
-        padding: 2px;
-        background: linear-gradient(
-            135deg,
-            rgba(56, 189, 248, 0.9),
-            rgba(99, 102, 241, 0.9),
-            rgba(236, 72, 153, 0.9)
-        );
-        -webkit-mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        opacity: 0.55;
-        transition: opacity 0.3s ease;
-        pointer-events: none;
-    }
-
-    .card-glow:hover {
-        transform: translateY(-6px);
-        box-shadow:
-            0 24px 70px rgba(56,189,248,0.20),
-            0 10px 35px rgba(0,0,0,0.45);
-    }
-
-    .card-glow:hover::before {
-        opacity: 1;
-    }
-
-    .summary-table {
-        width: 100%;
-        border-collapse: collapse;
-        background: rgba(15, 23, 42, 0.95);
-        border-radius: 16px;
-        overflow: hidden;
-        color: #F8FAFC;
-    }
-
-    .summary-table th {
-        background: rgba(30, 41, 59, 0.95);
-        color: #38BDF8;
-        padding: 14px;
-        text-align: center;
-    }
-
-    .summary-table td {
-        padding: 14px;
-        text-align: center;
-        border-top: 1px solid rgba(148, 163, 184, 0.2);
-    }
-
-    [data-testid="stPlotlyChart"] {
-        transition: transform 0.28s ease;
-        border-radius: 24px;
-        overflow: hidden;
-    }
-
-    [data-testid="stPlotlyChart"]:hover {
-        transform: translateY(-4px);
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(18px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 
 # -----------------------------
@@ -247,7 +52,7 @@ st.markdown(
 # Load data
 # -----------------------------
 with st.spinner("Analyzing trends..."):
-    df = process_data()
+    df = load_cached_data()
 
 if df.empty:
     st.warning("No data available.")
