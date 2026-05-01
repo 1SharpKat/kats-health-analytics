@@ -10,7 +10,7 @@ Built with Python, Streamlit, Plotly, and AI-assisted development workflows, thi
 ## Live Demo
 
 
-[Launch the App](https://ominous-space-adventure-q74rg5vrvqjj2pxp-8501.app.github.dev/)
+[Launch the App]https://kats-health-analytics.streamlit.app/
 
 
 ## Features
