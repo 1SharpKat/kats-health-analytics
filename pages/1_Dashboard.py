@@ -12,17 +12,15 @@ from utils.chart_helpers import clean_layout
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
+st.set_page_config(
+    layout="wide",
+    page_title="The Dashboard",
+    initial_sidebar_state="expanded"
+)
 
-# -----------------------------
-# Page setup
-# -----------------------------
-st.set_page_config(layout="wide", page_title="The Dashboard")
 load_theme()
 
 
-# -----------------------------
-# Helpers
-# -----------------------------
 def hover_title(title):
     st.markdown(
         f"""
@@ -39,24 +37,49 @@ def load_cached_data():
     return process_data()
 
 
-# -----------------------------
-# Page styling
-# -----------------------------
 st.markdown(
     """
     <style>
     header[data-testid="stHeader"] {
-        display: none;
+        background: transparent;
     }
 
     [data-testid="stToolbar"] {
         display: none;
     }
 
+    section[data-testid="stSidebar"] {
+        z-index: 999999;
+    }
+
     .block-container {
         padding-top: 1rem;
         position: relative;
         z-index: 2;
+    }
+
+    [data-testid="stButton"] {
+        position: relative;
+        z-index: 999999;
+        margin-bottom: 0.75rem;
+    }
+
+    [data-testid="stButton"] button {
+        width: 100%;
+        min-height: 52px;
+        background: rgba(15, 23, 42, 0.78);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 18px;
+        backdrop-filter: blur(18px);
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.25s ease;
+    }
+
+    [data-testid="stButton"] button:hover {
+        border: 1px solid rgba(99,102,241,0.35);
+        transform: translateY(-2px);
     }
 
     [data-testid="stPlotlyChart"] {
@@ -164,9 +187,6 @@ st.markdown(
 )
 
 
-# -----------------------------
-# Title
-# -----------------------------
 hover_title("The Dashboard")
 
 st.write(
@@ -174,10 +194,17 @@ st.write(
     "and recovery score."
 )
 
+st.markdown("<br>", unsafe_allow_html=True)
 
-# -----------------------------
-# Load data
-# -----------------------------
+if st.button("Home", width="stretch"):
+    st.switch_page("main.py")
+
+if st.button("Trends & Insights", width="stretch"):
+    st.switch_page("pages/2_Trends.py")
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+
 with st.spinner("Loading and processing data..."):
     df = load_cached_data()
 
@@ -186,9 +213,6 @@ if df.empty:
     st.stop()
 
 
-# -----------------------------
-# Sidebar filter
-# -----------------------------
 st.sidebar.header("Filters")
 
 time_range = st.sidebar.selectbox(
@@ -212,9 +236,6 @@ if filtered_df.empty:
     st.stop()
 
 
-# -----------------------------
-# Required column check
-# -----------------------------
 required_columns = [
     "Date",
     "Steps",
@@ -231,9 +252,6 @@ if missing_columns:
     st.stop()
 
 
-# -----------------------------
-# Key metrics
-# -----------------------------
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -248,9 +266,6 @@ with col3:
 st.markdown("<br>", unsafe_allow_html=True)
 
 
-# -----------------------------
-# First row of charts
-# -----------------------------
 left_col, right_col = st.columns(2)
 
 with left_col:
@@ -290,7 +305,7 @@ with left_col:
 
     st.plotly_chart(
         clean_layout(fig_recovery_sleep),
-        use_container_width=True
+        width="stretch"
     )
 
 with right_col:
@@ -325,15 +340,12 @@ with right_col:
 
     st.plotly_chart(
         clean_layout(fig_steps),
-        use_container_width=True
+        width="stretch"
     )
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 
-# -----------------------------
-# Second row of charts
-# -----------------------------
 left_col, right_col = st.columns(2)
 
 with left_col:
@@ -366,7 +378,7 @@ with left_col:
 
     st.plotly_chart(
         clean_layout(fig_heart),
-        use_container_width=True
+        width="stretch"
     )
 
 with right_col:
@@ -399,5 +411,5 @@ with right_col:
 
     st.plotly_chart(
         clean_layout(fig_calories),
-        use_container_width=True
+        width="stretch"
     )

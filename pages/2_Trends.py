@@ -9,26 +9,30 @@ from utils.constants import COLORS
 from utils.chart_helpers import clean_layout
 
 
-# -----------------------------
-# Page setup
-# -----------------------------
-st.set_page_config(layout="wide", page_title="Trends & Insights")
+st.set_page_config(
+    layout="wide",
+    page_title="Trends & Insights",
+    initial_sidebar_state="expanded"
+)
+
 load_theme()
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 
-# -----------------------------
-# Page styling
-# -----------------------------
 st.markdown(
     """
     <style>
+
     header[data-testid="stHeader"] {
-        display: none;
+        background: transparent;
     }
 
     [data-testid="stToolbar"] {
         display: none;
+    }
+
+    section[data-testid="stSidebar"] {
+        z-index: 999999;
     }
 
     .block-container {
@@ -36,6 +40,43 @@ st.markdown(
         position: relative;
         z-index: 2;
     }
+
+    /* -----------------------------
+       Mobile Safe Buttons
+    ----------------------------- */
+
+    [data-testid="stButton"] {
+        position: relative;
+        z-index: 999999;
+        margin-bottom: 0.75rem;
+    }
+
+    [data-testid="stButton"] button {
+        width: 100%;
+        min-height: 52px;
+
+        background: rgba(15, 23, 42, 0.78);
+        color: white;
+
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 18px;
+
+        backdrop-filter: blur(18px);
+
+        font-weight: 600;
+        font-size: 1rem;
+
+        transition: all 0.25s ease;
+    }
+
+    [data-testid="stButton"] button:hover {
+        border: 1px solid rgba(99,102,241,0.35);
+        transform: translateY(-2px);
+    }
+
+    /* -----------------------------
+       Animated Wallpaper
+    ----------------------------- */
 
     .slide-deck {
         position: fixed;
@@ -48,10 +89,15 @@ st.markdown(
     .slide {
         position: absolute;
         inset: 0;
+
         background-size: cover;
         background-position: center;
+
         opacity: 0;
-        animation: fadeSlide 24s infinite, slowZoom 24s infinite;
+
+        animation:
+            fadeSlide 24s infinite,
+            slowZoom 24s infinite;
     }
 
     .slide:nth-child(1) {
@@ -76,14 +122,17 @@ st.markdown(
 
     .slide-deck::after {
         content: "";
+
         position: absolute;
         inset: 0;
+
         background: linear-gradient(
             135deg,
             rgba(2,6,23,0.62),
             rgba(15,23,42,0.58),
             rgba(30,41,59,0.64)
         );
+
         z-index: 2;
     }
 
@@ -100,107 +149,121 @@ st.markdown(
         to { transform: scale(1.08); }
     }
 
+    /* -----------------------------
+       Hero Card
+    ----------------------------- */
+
+    .trend-hero {
+        position: relative;
+        overflow: hidden;
+
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+
+        border-radius: 28px;
+
+        background: rgba(15, 23, 42, 0.42);
+
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+
+        border: 1px solid rgba(255,255,255,0.10);
+
+        box-shadow:
+            inset 0 1px 1px rgba(255,255,255,0.12),
+            0 24px 55px rgba(99,102,241,0.30);
+    }
+
+    .trend-hero h1 {
+        color: white;
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .trend-hero p {
+        color: rgba(255,255,255,0.82);
+        font-size: 1.1rem;
+    }
+
+    /* -----------------------------
+       Plotly Cards
+    ----------------------------- */
+
     [data-testid="stPlotlyChart"] {
         background: rgba(15, 23, 42, 0.82);
+
         border: 1px solid rgba(255,255,255,0.08);
         border-radius: 24px;
+
         padding: 1rem;
+
         backdrop-filter: blur(18px);
+
         box-shadow:
             0 18px 40px rgba(0,0,0,0.35),
             inset 0 1px 1px rgba(255,255,255,0.05);
+
         margin-bottom: 1.5rem;
     }
 
     [data-testid="metric-container"] {
         background: rgba(15,23,42,0.72);
+
         border: 1px solid rgba(255,255,255,0.08);
+
         padding: 1rem;
+
         border-radius: 20px;
+
         backdrop-filter: blur(18px);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+
+        box-shadow:
+            0 12px 30px rgba(0,0,0,0.25);
     }
 
     h1, h2, h3 {
         color: white !important;
     }
 
+    /* -----------------------------
+       AI Insight Card
+    ----------------------------- */
+
     .ai-insight-card {
-    position: relative;
-    overflow: hidden;
+        position: relative;
+        overflow: hidden;
 
-    background: rgba(15, 23, 42, 0.42);
+        background: rgba(15, 23, 42, 0.42);
 
-    border: 1px solid rgba(255,255,255,0.10);
+        border: 1px solid rgba(255,255,255,0.10);
 
-    border-radius: 24px;
+        border-radius: 24px;
 
-    padding: 1.5rem;
+        padding: 1.5rem;
 
-    backdrop-filter: blur(22px);
-    -webkit-backdrop-filter: blur(22px);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
 
-    box-shadow:
-        inset 0 1px 1px rgba(255,255,255,0.08),
-        0 20px 40px rgba(0,0,0,0.28);
+        box-shadow:
+            inset 0 1px 1px rgba(255,255,255,0.08),
+            0 20px 40px rgba(0,0,0,0.28);
 
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease,
-        border 0.25s ease;
+        margin-bottom: 1.5rem;
+    }
 
-    margin-bottom: 1.5rem;
-}
+    .ai-insight-card p {
+        color: rgba(255,255,255,0.84);
+        line-height: 1.7;
+        font-size: 1rem;
+    }
 
-.ai-insight-card::before {
-    content: "";
-
-    position: absolute;
-
-    width: 260px;
-    height: 260px;
-
-    top: -90px;
-    right: -90px;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(99,102,241,0.20) 0%,
-            rgba(59,130,246,0.10) 40%,
-            transparent 75%
-        );
-
-    z-index: 0;
-}
-
-.ai-insight-card > * {
-    position: relative;
-    z-index: 2;
-}
-
-.ai-insight-card:hover {
-    transform: translateY(-6px) scale(1.01);
-
-    border: 1px solid rgba(99,102,241,0.30);
-
-    box-shadow:
-        inset 0 1px 1px rgba(255,255,255,0.12),
-        0 24px 55px rgba(99,102,241,0.30);
-}
-
-.ai-insight-card p {
-    color: rgba(255,255,255,0.84);
-
-    line-height: 1.7;
-
-    font-size: 1rem;
-}
     </style>
     """,
     unsafe_allow_html=True
 )
 
+# Wallpaper
 st.markdown(
     """
     <div class="slide-deck">
@@ -214,9 +277,6 @@ st.markdown(
 )
 
 
-# -----------------------------
-# Helpers
-# -----------------------------
 def hover_title(title):
     st.markdown(
         f"""
@@ -265,9 +325,7 @@ def modern_histogram(df, column, color, label):
     return clean_layout(fig)
 
 
-# -----------------------------
 # Hero
-# -----------------------------
 st.markdown(
     """
     <div class="trend-hero">
@@ -278,10 +336,18 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# Navigation
+st.markdown("<br>", unsafe_allow_html=True)
 
-# -----------------------------
+if st.button("Home", width="stretch"):
+    st.switch_page("main.py")
+
+if st.button("Dashboard", width="stretch"):
+    st.switch_page("pages/1_Dashboard.py")
+
+st.markdown("<br>", unsafe_allow_html=True)
+
 # Load data
-# -----------------------------
 with st.spinner("Analyzing trends..."):
     df = load_cached_data()
 
@@ -289,10 +355,7 @@ if df.empty:
     st.warning("No data available.")
     st.stop()
 
-
-# -----------------------------
-# Sidebar filter
-# -----------------------------
+# Sidebar
 st.sidebar.header("Filters")
 
 time_range = st.sidebar.selectbox(
@@ -305,9 +368,11 @@ max_date = df["Date"].max()
 if time_range == "Last 7 Days":
     cutoff_date = max_date - timedelta(days=7)
     filtered_df = df[df["Date"] >= cutoff_date].copy()
+
 elif time_range == "Last 30 Days":
     cutoff_date = max_date - timedelta(days=30)
     filtered_df = df[df["Date"] >= cutoff_date].copy()
+
 else:
     filtered_df = df.copy()
 
@@ -315,28 +380,7 @@ if filtered_df.empty:
     st.warning("No data matches this filter.")
     st.stop()
 
-
-# -----------------------------
-# Required column check
-# -----------------------------
-required_columns = [
-    "Date",
-    "Recovery_Score",
-    "Sleep_Hours",
-    "Steps",
-    "Calories_Burned"
-]
-
-missing_columns = [col for col in required_columns if col not in filtered_df.columns]
-
-if missing_columns:
-    st.error(f"Missing required columns: {missing_columns}")
-    st.stop()
-
-
-# -----------------------------
-# Metric highlights
-# -----------------------------
+# Metrics
 metric1, metric2, metric3, metric4 = st.columns(4)
 
 with metric1:
@@ -352,15 +396,13 @@ with metric4:
     st.metric("Avg Calories", f"{filtered_df['Calories_Burned'].mean():,.0f}")
 
 st.markdown("<br>", unsafe_allow_html=True)
-# -----------------------------
-# AI-Style Generated Insights
-# -----------------------------
+
+# AI Insights
 hover_title("AI-Generated Insights")
 
 avg_recovery = filtered_df["Recovery_Score"].mean()
 avg_sleep = filtered_df["Sleep_Hours"].mean()
 avg_steps = filtered_df["Steps"].mean()
-avg_calories = filtered_df["Calories_Burned"].mean()
 
 best_recovery_day = filtered_df.loc[filtered_df["Recovery_Score"].idxmax()]
 lowest_recovery_day = filtered_df.loc[filtered_df["Recovery_Score"].idxmin()]
@@ -373,7 +415,7 @@ if avg_sleep >= 7:
     )
 else:
     insights.append(
-        "Sleep may be limiting recovery. Average sleep is below 7 hours, which may affect recovery trends."
+        "Sleep may be limiting recovery. Average sleep is below 7 hours."
     )
 
 if avg_steps >= 9000:
@@ -382,58 +424,58 @@ if avg_steps >= 9000:
     )
 else:
     insights.append(
-        "Daily movement could be improved. Average steps are below the higher activity target range."
+        "Daily movement could be improved."
     )
 
 if avg_recovery >= 60:
     insights.append(
-        "Recovery is trending in a healthy range overall, with room for optimization."
+        "Recovery is trending in a healthy range overall."
     )
 else:
     insights.append(
-        "Recovery scores suggest possible fatigue patterns or inconsistent recovery habits."
+        "Recovery scores suggest possible fatigue patterns."
     )
 
 insights.append(
-    f"The highest recovery day was {best_recovery_day['Date'].strftime('%Y-%m-%d')} "
-    f"with a recovery score of {best_recovery_day['Recovery_Score']:.1f}."
+    f"The highest recovery day was {best_recovery_day['Date'].strftime('%Y-%m-%d')} with a recovery score of {best_recovery_day['Recovery_Score']:.1f}."
 )
 
 insights.append(
-    f"The lowest recovery day was {lowest_recovery_day['Date'].strftime('%Y-%m-%d')} "
-    f"with a recovery score of {lowest_recovery_day['Recovery_Score']:.1f}."
+    f"The lowest recovery day was {lowest_recovery_day['Date'].strftime('%Y-%m-%d')} with a recovery score of {lowest_recovery_day['Recovery_Score']:.1f}."
 )
 
 st.markdown(
-    f'<div class="ai-insight-card">'
-    f'<p><strong>Insight 1:</strong> {insights[0]}</p>'
-    f'<p><strong>Insight 2:</strong> {insights[1]}</p>'
-    f'<p><strong>Insight 3:</strong> {insights[2]}</p>'
-    f'<p><strong>Peak Recovery:</strong> {insights[3]}</p>'
-    f'<p><strong>Lowest Recovery:</strong> {insights[4]}</p>'
-    f'</div>',
+    f"""
+    <div class="ai-insight-card">
+        <p><strong>Insight 1:</strong> {insights[0]}</p>
+        <p><strong>Insight 2:</strong> {insights[1]}</p>
+        <p><strong>Insight 3:</strong> {insights[2]}</p>
+        <p><strong>Peak Recovery:</strong> {insights[3]}</p>
+        <p><strong>Lowest Recovery:</strong> {insights[4]}</p>
+    </div>
+    """,
     unsafe_allow_html=True
 )
+
 st.markdown("<br>", unsafe_allow_html=True)
 
-# -----------------------------
-# Monthly Recovery Trend
-# -----------------------------
+# Recovery Trend
 hover_title("Average Recovery Score by Month")
 
 monthly = filtered_df.copy()
+
 monthly["Month"] = monthly["Date"].dt.to_period("M").astype(str)
-monthly = monthly.groupby("Month", as_index=False)["Recovery_Score"].mean()
+
+monthly = monthly.groupby(
+    "Month",
+    as_index=False
+)["Recovery_Score"].mean()
 
 fig_month = px.line(
     monthly,
     x="Month",
     y="Recovery_Score",
-    markers=True,
-    labels={
-        "Month": "Month",
-        "Recovery_Score": "Average Recovery Score"
-    }
+    markers=True
 )
 
 fig_month.update_traces(
@@ -442,8 +484,7 @@ fig_month.update_traces(
         size=9,
         color=COLORS["pink"],
         line=dict(width=2, color="white")
-    ),
-    hovertemplate="<b>Month:</b> %{x}<br><b>Avg Recovery:</b> %{y:.1f}<extra></extra>"
+    )
 )
 
 fig_month.update_layout(
@@ -454,15 +495,12 @@ fig_month.update_layout(
 
 st.plotly_chart(
     clean_layout(fig_month),
-    use_container_width=True
+    width="stretch"
 )
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-
-# -----------------------------
 # Histograms
-# -----------------------------
 hover_title("Metric Distributions")
 
 col1, col2 = st.columns(2)
@@ -475,7 +513,7 @@ with col1:
         "Steps"
     )
 
-    st.plotly_chart(fig_steps, use_container_width=True)
+    st.plotly_chart(fig_steps, width="stretch")
 
 with col2:
     fig_calories = modern_histogram(
@@ -485,7 +523,7 @@ with col2:
         "Calories Burned"
     )
 
-    st.plotly_chart(fig_calories, use_container_width=True)
+    st.plotly_chart(fig_calories, width="stretch")
 
 col3, col4 = st.columns(2)
 
@@ -497,7 +535,7 @@ with col3:
         "Recovery Score"
     )
 
-    st.plotly_chart(fig_recovery, use_container_width=True)
+    st.plotly_chart(fig_recovery, width="stretch")
 
 with col4:
     fig_sleep = modern_histogram(
@@ -507,4 +545,4 @@ with col4:
         "Sleep Hours"
     )
 
-    st.plotly_chart(fig_sleep, use_container_width=True)
+    st.plotly_chart(fig_sleep, width="stretch")
