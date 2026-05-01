@@ -2,32 +2,173 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import warnings
+from datetime import timedelta
+
+from modules.processor import process_data
+from styles.theme import load_theme
 from utils.constants import COLORS
 from utils.chart_helpers import clean_layout
 
 
-warnings.filterwarnings(
-    "ignore",
-    category=FutureWarning
-)
-
-from datetime import timedelta
-
-from modules.processor import process_data
-
-from styles.theme import load_theme
-
-load_theme()
-
-
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 
 # -----------------------------
 # Page setup
 # -----------------------------
-st.set_page_config(layout="wide", page_title="FitSync Dashboard")
+st.set_page_config(layout="wide", page_title="The Dashboard")
+load_theme()
 
-st.title("FitSync Dashboard")
+
+# -----------------------------
+# Helpers
+# -----------------------------
+def hover_title(title):
+    st.markdown(
+        f"""
+        <div class="title-card">
+            <h3>{title}</h3>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+@st.cache_data
+def load_cached_data():
+    return process_data()
+
+
+# -----------------------------
+# Page styling
+# -----------------------------
+st.markdown(
+    """
+    <style>
+    header[data-testid="stHeader"] {
+        display: none;
+    }
+
+    [data-testid="stToolbar"] {
+        display: none;
+    }
+
+    .block-container {
+        padding-top: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    [data-testid="stPlotlyChart"] {
+        background: rgba(15, 23, 42, 0.82);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 24px;
+        padding: 1rem;
+        backdrop-filter: blur(18px);
+        box-shadow:
+            0 18px 40px rgba(0,0,0,0.35),
+            inset 0 1px 1px rgba(255,255,255,0.05);
+        margin-bottom: 1.5rem;
+    }
+
+    [data-testid="metric-container"] {
+        background: rgba(15,23,42,0.72);
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 1rem;
+        border-radius: 20px;
+        backdrop-filter: blur(18px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+
+    .slide-deck {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .slide {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        opacity: 0;
+        animation: fadeSlide 24s infinite, slowZoom 24s infinite;
+    }
+
+    .slide:nth-child(1) {
+        background-image: url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2200&auto=format&fit=crop");
+        animation-delay: 0s;
+    }
+
+    .slide:nth-child(2) {
+        background-image: url("https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=2200&auto=format&fit=crop");
+        animation-delay: 6s;
+    }
+
+    .slide:nth-child(3) {
+        background-image: url("https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2200&auto=format&fit=crop");
+        animation-delay: 12s;
+    }
+
+    .slide:nth-child(4) {
+        background-image: url("https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=2200&auto=format&fit=crop");
+        animation-delay: 18s;
+    }
+
+    .slide-deck::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            135deg,
+            rgba(2,6,23,0.35),
+            rgba(15,23,42,0.30),
+            rgba(30,41,59,0.35)
+        );
+        z-index: 2;
+    }
+
+    @keyframes fadeSlide {
+        0% { opacity: 0; }
+        8% { opacity: 0.65; }
+        22% { opacity: 0.65; }
+        30% { opacity: 0; }
+        100% { opacity: 0; }
+    }
+
+    @keyframes slowZoom {
+        from { transform: scale(1); }
+        to { transform: scale(1.08); }
+    }
+
+    h1, h2, h3 {
+        color: white !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <div class="slide-deck">
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# -----------------------------
+# Title
+# -----------------------------
+hover_title("The Dashboard")
+
 st.write(
     "Personal health analytics based on steps, sleep, heart rate, calories, "
     "and recovery score."
@@ -37,17 +178,13 @@ st.write(
 # -----------------------------
 # Load data
 # -----------------------------
-@st.cache_data
-def load_cached_data():
-    return process_data()
-
-
 with st.spinner("Loading and processing data..."):
     df = load_cached_data()
 
 if df.empty:
     st.warning("No data available.")
     st.stop()
+
 
 # -----------------------------
 # Sidebar filter
@@ -94,9 +231,6 @@ if missing_columns:
     st.stop()
 
 
-
-
-
 # -----------------------------
 # Key metrics
 # -----------------------------
@@ -111,7 +245,7 @@ with col2:
 with col3:
     st.metric("Average Recovery Score", f"{filtered_df['Recovery_Score'].mean():.1f}")
 
-st.markdown("---")
+st.markdown("<br>", unsafe_allow_html=True)
 
 
 # -----------------------------
@@ -120,9 +254,7 @@ st.markdown("---")
 left_col, right_col = st.columns(2)
 
 with left_col:
-    st.markdown('<div class="card-glow">', unsafe_allow_html=True)
-
-    st.subheader("Recovery Score & Sleep Trend")
+    hover_title("Recovery Score & Sleep Trend")
 
     fig_recovery_sleep = go.Figure()
 
@@ -150,7 +282,10 @@ with left_col:
 
     fig_recovery_sleep.update_layout(
         xaxis_title="Date",
-        yaxis_title="Value"
+        yaxis_title="Value",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(15,23,42,0.35)",
+        font=dict(color="white")
     )
 
     st.plotly_chart(
@@ -158,12 +293,8 @@ with left_col:
         use_container_width=True
     )
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
 with right_col:
-    st.markdown('<div class="card-glow">', unsafe_allow_html=True)
-
-    st.subheader("Recovery Score vs Daily Steps")
+    hover_title("Recovery Score vs Daily Steps")
 
     fig_steps = px.scatter(
         filtered_df,
@@ -186,13 +317,16 @@ with right_col:
         marker=dict(size=9)
     )
 
+    fig_steps.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(15,23,42,0.35)",
+        font=dict(color="white")
+    )
+
     st.plotly_chart(
         clean_layout(fig_steps),
         use_container_width=True
     )
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -203,9 +337,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 left_col, right_col = st.columns(2)
 
 with left_col:
-    st.markdown('<div class="card-glow">', unsafe_allow_html=True)
-
-    st.subheader("Recovery Score vs Resting Heart Rate")
+    hover_title("Recovery Score vs Resting Heart Rate")
 
     fig_heart = px.scatter(
         filtered_df,
@@ -226,17 +358,19 @@ with left_col:
         )
     )
 
+    fig_heart.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(15,23,42,0.35)",
+        font=dict(color="white")
+    )
+
     st.plotly_chart(
         clean_layout(fig_heart),
         use_container_width=True
     )
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
 with right_col:
-    st.markdown('<div class="card-glow">', unsafe_allow_html=True)
-
-    st.subheader("Daily Calories Burned Trend")
+    hover_title("Daily Calories Burned Trend")
 
     fig_calories = px.line(
         filtered_df,
@@ -257,10 +391,13 @@ with right_col:
         marker=dict(size=6)
     )
 
+    fig_calories.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(15,23,42,0.35)",
+        font=dict(color="white")
+    )
+
     st.plotly_chart(
         clean_layout(fig_calories),
         use_container_width=True
     )
-
-    st.markdown("</div>", unsafe_allow_html=True)
-

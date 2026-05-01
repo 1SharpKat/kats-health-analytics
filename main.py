@@ -1,281 +1,281 @@
 import streamlit as st
-
 import warnings
 
 from styles.theme import load_theme
+from utils.constants import COLORS
 
-load_theme()
-
-
-warnings.filterwarnings(
-    "ignore",
-    category=FutureWarning
-)
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 st.set_page_config(
     page_title="Kat's Health Analytics",
-    page_icon="",
     layout="wide"
 )
 
+load_theme()
+
 st.markdown(
-    """
+    f"""
     <style>
+    header[data-testid="stHeader"] {{
+        display: none;
+    }}
 
- COLORS = {
-    "blue": "#38BDF8",
-    "indigo": "#6366F1",
-    "pink": "#EC4899",
-    "green": "#22C55E",
-    "amber": "#F59E0B",
-    "text": "#F8FAFC",
-    "muted": "#CBD5E1"
-}   
+    [data-testid="stToolbar"] {{
+        display: none;
+    }}
 
-.stApp {
-    background:
-        radial-gradient(circle at top left, rgba(56,189,248,0.18), transparent 28%),
-        radial-gradient(circle at top right, rgba(99,102,241,0.18), transparent 30%),
-        linear-gradient(135deg, #020617, #0F172A 55%, #111827);
-    color: #F8FAFC;
-}
+    .block-container {{
+        padding-top: 1rem;
+        position: relative;
+        z-index: 2;
+    }}
 
-h1, h2, h3 {
-    letter-spacing: -0.03em;
-}
+    .stApp {{
+        background: linear-gradient(135deg, #020617, #0F172A, #111827);
+    }}
 
-p {
-    color: #CBD5E1;
-}
+    .slide-deck {{
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }}
 
-.premium-card {
-    padding: 1.5rem;
-    border-radius: 28px;
-    background: rgba(15, 23, 42, 0.86);
-    border: 1px solid rgba(148, 163, 184, 0.18);
-    backdrop-filter: blur(18px);
-    box-shadow:
-        0 18px 45px rgba(0,0,0,0.35),
-        inset 0 1px 0 rgba(255,255,255,0.05);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
+    .slide {{
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        opacity: 0;
+        animation: fadeSlide 24s infinite, slowZoom 24s infinite;
+    }}
 
-.premium-card:hover {
-    transform: translateY(-6px);
-    box-shadow:
-        0 24px 70px rgba(56,189,248,0.20),
-        0 10px 35px rgba(0,0,0,0.45);
-}
+    .slide:nth-child(1) {{
+        background-image: url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2200&auto=format&fit=crop");
+        animation-delay: 0s;
+    }}
 
-.hero-premium {
-    padding: 3rem;
-    border-radius: 34px;
-    background:
-        linear-gradient(135deg, rgba(56,189,248,0.95), rgba(99,102,241,0.95), rgba(236,72,153,0.85));
-    box-shadow: 0 28px 80px rgba(56,189,248,0.25);
-    margin-bottom: 2rem;
-}
+    .slide:nth-child(2) {{
+        background-image: url("https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=2200&auto=format&fit=crop");
+        animation-delay: 6s;
+    }}
 
-.hero-premium h1 {
-    font-size: 4rem;
-    margin-bottom: 0.5rem;
-    color: white;
-}
+    .slide:nth-child(3) {{
+        background-image: url("https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2200&auto=format&fit=crop");
+        animation-delay: 12s;
+    }}
 
-.hero-premium p {
-    font-size: 1.25rem;
-    color: #E0F2FE;
-}
+    .slide:nth-child(4) {{
+        background-image: url("https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=2200&auto=format&fit=crop");
+        animation-delay: 18s;
+    }}
 
-div[data-testid="metric-container"] {
-    background: linear-gradient(135deg, rgba(56,189,248,0.95), rgba(99,102,241,0.95));
-    padding: 20px;
-    border-radius: 24px;
-    box-shadow: 0 18px 45px rgba(56,189,248,0.22);
-    border: 1px solid rgba(255,255,255,0.15);
-}
+    .slide-deck::after {{
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            135deg,
+            rgba(2,6,23,0.22),
+            rgba(15,23,42,0.16),
+            rgba(30,41,59,0.22)
+        );
+        z-index: 2;
+    }}
 
-div[data-testid="metric-container"] label,
-div[data-testid="metric-container"] div {
-    color: white !important;
-}
+    @keyframes fadeSlide {{
+        0% {{ opacity: 0; }}
+        8% {{ opacity: 0.72; }}
+        22% {{ opacity: 0.72; }}
+        30% {{ opacity: 0; }}
+        100% {{ opacity: 0; }}
+    }}
 
-section[data-testid="stSidebar"] {
-    background: rgba(2, 6, 23, 0.96);
-    border-right: 1px solid rgba(148, 163, 184, 0.15);
-}    
-    .hero {
-        padding: 3rem;
-        border-radius: 28px;
-        background: linear-gradient(135deg, #0F172A, #1E293B, #312E81);
-        color: white;
-        text-align: center;
+    @keyframes slowZoom {{
+        from {{ transform: scale(1); }}
+        to {{ transform: scale(1.08); }}
+    }}
+
+    .home-hero {{
+        will-change: transform;
+        position: relative;
+        overflow: hidden;
+        padding: 2.5rem;
         margin-bottom: 2rem;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-    }
+        border-radius: 28px;
+        background: rgba(15, 23, 42, 0.42);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow:
+            inset 0 1px 1px rgba(255,255,255,0.12),
+            0 24px 55px rgba(99, 102, 241, 0.30);
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            border 0.25s ease;
+    }}
 
-    .hero h1 {
+    .home-hero:hover {{
+        transform: translateY(-4px) scale(1.005);
+        border: 1px solid rgba(99, 102, 241, 0.30);
+        box-shadow:
+            inset 0 1px 1px rgba(255,255,255,0.08),
+            0 24px 48px rgba(99, 102, 241, 0.20);
+    }}
+
+    .home-hero::before {{
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        background:
+            radial-gradient(
+                circle,
+                rgba(99,102,241,0.24) 0%,
+                rgba(59,130,246,0.14) 40%,
+                transparent 75%
+            );
+        top: -120px;
+        right: -120px;
+        z-index: 0;
+    }}
+
+    .home-hero > * {{
+        position: relative;
+        z-index: 2;
+    }}
+
+    .home-hero h1 {{
         font-size: 4rem;
+        font-weight: 800;
+        letter-spacing: -1px;
         margin-bottom: 0.5rem;
-    }
+        color: white;
+    }}
 
-    .hero p {
-        font-size: 1.25rem;
-        color: #CBD5E1;
-    }
+    .home-hero p {{
+        font-size: 1.15rem;
+        color: rgba(255,255,255,0.82);
+        max-width: 850px;
+    }}
 
-   .slide-deck {
-    height: 360px;
-    border-radius: 28px;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center;
-    animation: healthSlides 24s infinite;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
-    margin-bottom: 2rem;
-}
+    .home-grid {{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }}
 
-@keyframes healthSlides {
-    0% {
-        background-image: url("https://images.unsplash.com/photo-1518611012118-696072aa579a");
-    }
-    25% {
-        background-image: url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438");
-    }
-    50% {
-        background-image: url("https://images.unsplash.com/photo-1490645935967-10de6ba17061");
-    }
-    75% {
-        background-image: url("https://images.unsplash.com/photo-1506126613408-eca07ce68773");
-    }
-    100% {
-        background-image: url("https://images.unsplash.com/photo-1518611012118-696072aa579a");
-    }
-}
-
-   .card {
-    padding: 1.5rem;
-    border-radius: 22px;
-    background: rgba(15, 23, 42, 0.88);
-    border: 1px solid rgba(148, 163, 184, 0.14);
-    backdrop-filter: blur(14px);
-    min-height: 180px;
-}
-
-    .card h3 {
-        color: #38BDF8;
-    }
-
-    .card p {
-        color: #CBD5E1;
-        line-height: 1.5;
-    }
-.card {
-    position: relative;
-    overflow: hidden;
-    transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease,
-        border 0.3s ease;
-}
-
-.card::before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    border-radius: 24px;
-    padding: 2px;
-    background: linear-gradient(
-        135deg,
-        rgba(56, 189, 248, 0.9),
-        rgba(99, 102, 241, 0.9),
-        rgba(236, 72, 153, 0.9)
-    );
-    -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.75;
-    transition: opacity 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-8px) scale(1.015);
-    box-shadow:
-        0 0 20px rgba(56, 189, 248, 0.35),
-        0 0 40px rgba(99, 102, 241, 0.25),
-        0 0 60px rgba(236, 72, 153, 0.18);
-}
-
-.card:hover::before {
-    opacity: 1;
-}
-    
-
-    .nav-box {
+    .home-card {{
+        will-change: transform;
+        position: relative;
+        overflow: hidden;
+        min-height: 220px;
         padding: 1.75rem;
         border-radius: 24px;
-        background: rgba(30, 41, 59, 0.95);
-        border-left: 6px solid #38BDF8;
+        background: rgba(15, 23, 42, 0.42);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow:
+            inset 0 1px 1px rgba(255,255,255,0.08),
+            0 20px 40px rgba(0,0,0,0.28);
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            border 0.25s ease;
+    }}
+
+    .home-card::before {{
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        background:
+            radial-gradient(
+                circle,
+                rgba(99,102,241,0.22) 0%,
+                rgba(59,130,246,0.12) 40%,
+                transparent 75%
+            );
+        top: -70px;
+        right: -70px;
+        z-index: 0;
+    }}
+
+    .home-card > * {{
+        position: relative;
+        z-index: 2;
+    }}
+
+    .home-card:hover {{
+        transform: translateY(-6px) scale(1.01);
+        border: 1px solid rgba(99, 102, 241, 0.30);
+        box-shadow:
+            inset 0 1px 1px rgba(255,255,255,0.12),
+            0 24px 55px rgba(99, 102, 241, 0.30);
+    }}
+
+    .home-card h3 {{
+        color: white;
+        font-size: 1.45rem;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        margin-bottom: 0.85rem;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding-bottom: 0.65rem;
+    }}
+
+    .home-card p {{
+        color: rgba(255,255,255,0.78);
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 400;
+        letter-spacing: 0.2px;
+    }}
+
+    .nav-card {{
         margin-top: 2rem;
-    }
+        padding: 1.75rem;
+        border-radius: 24px;
+        background: rgba(15, 23, 42, 0.42);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow:
+            inset 0 1px 1px rgba(255,255,255,0.08),
+            0 20px 40px rgba(0,0,0,0.28);
+    }}
 
-    [data-testid="stPlotlyChart"] {
-    transition:
-        transform 0.28s ease,
-        box-shadow 0.28s ease;
-    border-radius: 24px;
-    overflow: hidden;
-}
+    .nav-card h3 {{
+        color: white;
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding-bottom: 0.65rem;
+    }}
 
-[data-testid="stPlotlyChart"]:hover {
-    transform: translateY(-4px);
-}
+    .nav-card p {{
+        color: rgba(255,255,255,0.82);
+        font-size: 1.05rem;
+        line-height: 1.6;
+        font-weight: 400;
+        letter-spacing: 0.2px;
+    }}
 
+    @media (max-width: 900px) {{
+        .home-grid {{
+            grid-template-columns: 1fr;
+        }}
 
-@media (max-width: 768px) {
-    .slide-deck {
-        height: 220px !important;
-        border-radius: 22px !important;
-    }
-}
-
-    .hero h1,
-    .trend-hero h1,
-    .hero-premium h1 {
-        font-size: 2.4rem !important;
-        line-height: 1.1 !important;
-    }
-
-    .hero p,
-    .trend-hero p,
-    .hero-premium p {
-        font-size: 1rem !important;
-    }
-
-    .card,
-    .card-glow,
-    .premium-card,
-    .nav-box {
-        padding: 1rem !important;
-        border-radius: 20px !important;
-        margin-bottom: 1rem !important;
-    }
-
-    [data-testid="stMetric"] {
-        width: 100% !important;
-    }
-
-    [data-testid="stPlotlyChart"] {
-        min-height: 320px !important;
-    }
-
-    .slide-deck {
-        height: 220px !important;
-        border-radius: 22px !important;
-    }
-}
+        .home-hero h1 {{
+            font-size: 2.6rem;
+        }}
+    }}
     </style>
     """,
     unsafe_allow_html=True
@@ -283,59 +283,35 @@ section[data-testid="stSidebar"] {
 
 st.markdown(
     """
-    <div class="hero">
-        <h1>Welcome to Kat's Health Analytics</h1>
-        <p>A modern health analytics dashboard for recovery, sleep, movement, and energy.</p>
+    <div class="slide-deck">
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
     </div>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown('<div class="slide-deck"></div>', unsafe_allow_html=True)
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown(
-        """
-        <div class="card">
-            <h3>📊 Dashboard</h3>
-            <p>View your key health metrics, including steps, sleep, recovery score, heart rate, and calories burned.</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with col2:
-    st.markdown(
-        """
-        <div class="card">
-            <h3>📈 Trends & Insights</h3>
-            <p>Explore deeper patterns with monthly recovery trends and distribution charts.</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with col3:
-    st.markdown(
-        """
-        <div class="card">
-            <h3>🧠 Built with AI</h3>
-            <p>This project uses Python, Streamlit, Plotly, and AI-assisted development to analyze synthetic health data.</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+st.markdown(
+    '<div class="home-hero"><h1>Kat&apos;s Health Analytics</h1><p>A modern health analytics app for recovery, sleep, movement, calories, and energy.</p><p>Built with Python, Streamlit, Plotly, and AI-assisted development.</p></div>',
+    unsafe_allow_html=True
+)
 
 st.markdown(
-    """
-    <div class="nav-box">
-        <h2>🚀 How to Navigate</h2>
-        <p>Use the sidebar on the left to move between pages.</p>
-        <p>👉 Click <strong>Dashboard</strong> for metrics and charts.</p>
-        <p>👉 Click <strong>Trends & Insights</strong> for deeper visual analysis.</p>
-    </div>
-    """,
+    '<div class="home-grid">'
+    '<div class="home-card"><h3>Dashboard</h3><p>View your key health metrics, including average steps, sleep hours, recovery score, heart rate, and calories burned.</p></div>'
+    '<div class="home-card"><h3>Trends & Insights</h3><p>Explore deeper patterns with monthly recovery trends, summary statistics, and distribution charts.</p></div>'
+    '<div class="home-card"><h3>Built with AI</h3><p>This project uses synthetic health data to demonstrate data cleaning, visualization, dashboard design, and AI-assisted development.</p></div>'
+    '</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div class="nav-card"><h3>Navigation</h3>'
+    '<p>Use the sidebar on the left to move between pages.</p>'
+    '<p>Select <strong>Dashboard</strong> for metrics and charts.</p>'
+    '<p>Select <strong>Trends & Insights</strong> for deeper visual analysis.</p>'
+    '</div>',
     unsafe_allow_html=True
 )

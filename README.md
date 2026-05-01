@@ -1,93 +1,101 @@
-# 💪 Kat's Health Analytics  
-### A modern health analytics platform built with Python, Streamlit, and AI-assisted development.
+# Kat's Health Analytics
+
+A modern health analytics dashboard built with Python, Streamlit, Plotly, and AI-assisted development.
+
+This project analyzes synthetic wellness data to visualize recovery trends, sleep patterns, movement, calories burned, and overall health performance through an interactive dashboard experience.
+
+
+## Live Demo
+
+(https://ominous-space-adventure-q74rg5vrvqjj2pxp-8501.app.github.dev/)
+---
+
+## Features
+
+- Interactive Dashboard
+- Trends & Insights Page
+- AI-Generated Health Insights
+- Dynamic Animated Backgrounds
+- Modern Glassmorphism UI
+- Responsive Layout
+- Time-Based Filtering
+- Recovery Trend Analysis
+- Interactive Plotly Visualizations
+- Streamlit Caching for Performance
 
 ---
 
-# 📌 Project Overview
+## Tech Stack
 
-Kat's Health Analytics is a multi-page personal health analytics dashboard designed to visualize wellness and recovery trends through an interactive modern UI. The platform analyzes synthetic health data including recovery score, sleep, daily steps, heart rate, and calories burned using dynamic charts and statistical insights. The application was built with a product-focused mindset, emphasizing clean UX, responsive performance, modern dashboard design, and polished visual storytelling. This project demonstrates practical Python development, data visualization, frontend styling, and AI-assisted workflow integration within a real development environment.
-
----
-
-# 🛠️ Tech Stack
-
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
-![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)
-![GitHub Codespaces](https://img.shields.io/badge/GitHub_Codespaces-181717?style=for-the-badge&logo=github&logoColor=white)
-![Continue Agent](https://img.shields.io/badge/Continue_Agent-AI_Assisted-blueviolet?style=for-the-badge)
+- Python
+- Streamlit
+- Plotly
+- Pandas
+- CSS / Glassmorphism UI
+- AI-Assisted Development
 
 ---
 
-# 🚀 Features
+## Screenshots
 
-- 🌙 Premium dark-mode health analytics UI
-- 📊 KPI dashboard with interactive Plotly visualizations
-- 📈 Trend analysis and metric distribution histograms
-- ⚡ Cached data loading for improved performance
-- 🎨 Modern glassmorphism-inspired dashboard styling
-- 📱 Responsive multi-page Streamlit application
+### Dashboard
+_Add dashboard screenshot here_
 
----
-
-# 🖥️ Pages Included
-
-| Page | Description |
-|---|---|
-| 🏠 Main | Landing page with navigation and platform overview |
-| 📊 Dashboard | KPI metrics, trend charts, and health analytics visualizations |
-| 📈 Trends & Insights | Histograms, summary statistics, and deeper trend analysis |
+### Trends & Insights
+_Add trends page screenshot here_
 
 ---
 
-# ▶️ How to Run
+## Project Goals
 
-## Clone the repository
+This project was designed to demonstrate:
+
+- Data visualization
+- Dashboard design
+- User experience thinking
+- AI-assisted development workflows
+- Data storytelling
+- Trend analysis
+- Front-end polish in Python applications
+
+---
+
+## AI-Assisted Development
+
+This project was built using an AI-assisted workflow for:
+- UI iteration
+- debugging
+- chart design
+- layout optimization
+- feature ideation
+- styling refinement
+
+The goal was not just to build a dashboard, but to learn modern iterative development practices using AI tools alongside Python development.
+
+---
+
+## Installation
 
 ```bash
-git clone <your-repository-url>
-```
-
-## Open in GitHub Codespaces
-
-1. Open the repository in GitHub
-2. Click the green **Code** button
-3. Select the **Codespaces** tab
-4. Create a new Codespace
-
-## Run the application
-
-Open the terminal and run:
-
-```bash
+git clone <your_repo_url>
+cd kats-health-analytics
+pip install -r requirements.txt
 streamlit run main.py
 ```
 
-The application will launch in the browser using the forwarded Streamlit port.
+---
+
+## Future Improvements
+
+- Real wearable integrations
+- Predictive recovery scoring
+- Personalized recommendations
+- Advanced anomaly detection
+- Exportable reports
+- Authentication & user profiles
 
 ---
 
-# 🤖 Built with AI
+## Author
 
-This project was developed using the Continue Agent inside GitHub Codespaces to accelerate development workflows, troubleshoot syntax issues, and streamline UI iteration. AI assistance was used as a collaborative coding tool throughout the project, while all architectural decisions, dashboard structure, styling direction, data handling logic, and feature implementation choices were independently designed and owned by the developer. The project reflects both technical problem-solving and practical AI-assisted development skills within a modern software workflow.
-
----
-
-# 📷 Dashboard Highlights
-
-- Premium dark-mode interface
-- Interactive Plotly charts
-- KPI metric cards
-- Health trend visualizations
-- Histogram-based insights
-- Responsive multi-page architecture
-- Glassmorphism-inspired UI styling
-
----
-
-# 📬 Contact
-
-**Kat Sharp**  
-Executive Assistant • Project Management • AI Workflow Development • Python Learning Journey
-
+Kathryn Sharp
